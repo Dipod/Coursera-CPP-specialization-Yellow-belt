@@ -1,54 +1,169 @@
 /*
- Вычислите суммарную массу имеющих форму прямоугольного параллелепипеда блоков одинаковой плотности, но разного размера.
+ Имеется база регионов, представленная вектором структур Region:
 
- Указание
+ struct Region {
+ string std_name;
+ string parent_std_name;
+ map<Lang, string> names;
+ int64_t population;
+ };
 
- Считайте, что размеры блоков измеряются в сантиметрах, плотность — в граммах на кубический сантиметр, а итоговая масса — в граммах.
- Таким образом, массу блока можно вычислять как простое произведение плотности на объём.
+ Здесь Lang — идентификатор языка:
 
- Формат ввода
+ enum class Lang {
+ DE, FR, IT
+ };
 
- В первой строке вводятся два целых положительных числа: количество блоков N и плотность каждого блока R.
- Каждая из следующих N строк содержит три целых положительных числа W, H, D — размеры очередного блока.
+ Напишите функцию FindMaxRepetitionCount, принимающую базу регионов и определяющую,
+ какое максимальное количество повторов (число вхождений одного и того же элемента) она содержит.
+ Две записи (объекты типа Region) считаются различными, если они отличаются хотя бы одним полем.
 
- Гарантируется, что:
+ int FindMaxRepetitionCount(const vector<Region>& regions);
 
- количество блоков N не превосходит 10^5;
- плотность блоков R не превосходит 100;
- размеры блоков W, H, D не превосходят 10^4.
+ Если все записи уникальны, считайте максимальное количество повторов равным 1.
+ Если записи отсутствуют, верните 0. Гарантируется, что типа int достаточно для хранения ответа.
 
- Пример
+ Пример кода
 
- Ввод
+ int main() {
+ cout << FindMaxRepetitionCount({
+ {
+ "Moscow",
+ "Russia",
+ {{Lang::DE, "Moskau"}, {Lang::FR, "Moscou"}, {Lang::IT, "Mosca"}},
+ 89
+ }, {
+ "Russia",
+ "Eurasia",
+ {{Lang::DE, "Russland"}, {Lang::FR, "Russie"}, {Lang::IT, "Russia"}},
+ 89
+ }, {
+ "Moscow",
+ "Russia",
+ {{Lang::DE, "Moskau"}, {Lang::FR, "Moscou"}, {Lang::IT, "Mosca"}},
+ 89
+ }, {
+ "Moscow",
+ "Russia",
+ {{Lang::DE, "Moskau"}, {Lang::FR, "Moscou"}, {Lang::IT, "Mosca"}},
+ 89
+ }, {
+ "Russia",
+ "Eurasia",
+ {{Lang::DE, "Russland"}, {Lang::FR, "Russie"}, {Lang::IT, "Russia"}},
+ 89
+ },
+ }) << endl;
 
- 2 14
- 1 2 3
- 30 40 50
+ cout << FindMaxRepetitionCount({
+ {
+ "Moscow",
+ "Russia",
+ {{Lang::DE, "Moskau"}, {Lang::FR, "Moscou"}, {Lang::IT, "Mosca"}},
+ 89
+ }, {
+ "Russia",
+ "Eurasia",
+ {{Lang::DE, "Russland"}, {Lang::FR, "Russie"}, {Lang::IT, "Russia"}},
+ 89
+ }, {
+ "Moscow",
+ "Russia",
+ {{Lang::DE, "Moskau"}, {Lang::FR, "Moscou deux"}, {Lang::IT, "Mosca"}},
+ 89
+ }, {
+ "Moscow",
+ "Toulouse",
+ {{Lang::DE, "Moskau"}, {Lang::FR, "Moscou"}, {Lang::IT, "Mosca"}},
+ 89
+ }, {
+ "Moscow",
+ "Russia",
+ {{Lang::DE, "Moskau"}, {Lang::FR, "Moscou"}, {Lang::IT, "Mosca"}},
+ 31
+ },
+ }) << endl;
+
+ return 0;
+ }
 
  Вывод
 
- 840084
+ 3
+ 1
 
+ Пояснение
+
+ В этой задаче вам надо прислать на проверку файл с реализацией функции FindMaxRepetitionCount,
+ а также дополнительных функций, если это необходимо. Этот файл не должен содержать типы Lang и Region.
+ В противном случае вы получите ошибку компиляции.
  */
 
 #include <iostream>
+#include <map>
 #include <vector>
-#include <cstdint>
+#include <tuple>
 
 using namespace std;
 
+enum class Lang {
+	DE, FR, IT
+};
+
+struct Region {
+	string std_name;
+	string parent_std_name;
+	map<Lang, string> names;
+	int64_t population;
+};
+
+bool operator<(const Region& lhs, const Region& rhs) {
+  return tie(lhs.std_name, lhs.parent_std_name, lhs.names, lhs.population) <
+      tie(rhs.std_name, rhs.parent_std_name, rhs.names, rhs.population);
+}
+
+int FindMaxRepetitionCount(const vector<Region>& regions) {
+  int result = 0;
+  map<Region, int> repetition_count;
+  for (const Region& region : regions) {
+    result = max(result, ++repetition_count[region]);
+  }
+  return result;
+}
+
 int main() {
 
-	uint64_t mass = 0, r = 0, w = 0, h = 0, d = 0;
-	size_t n = 0;
-	cin >> n >> r;
+	cout << FindMaxRepetitionCount( { { "Moscow", "Russia", { { Lang::DE,
+			"Moskau" }, { Lang::FR, "Moscou" }, { Lang::IT, "Mosca" } }, 89 } })
+			<< endl;
 
-	for (size_t i = 0; i < n; i++) {
-		cin >> w >> h >> d;
-		mass += (w * h * d * r);
-	}
+	cout
+			<< FindMaxRepetitionCount( { { "Moscow", "Russia", { { Lang::DE,
+					"Moskau" }, { Lang::FR, "Moscou" }, { Lang::IT, "Mosca" } },
+					89 }, { "Russia", "Eurasia", { { Lang::DE, "Russland" }, {
+					Lang::FR, "Russie" }, { Lang::IT, "Russia" } }, 89 }, {
+					"Moscow", "Russia", { { Lang::DE, "Moskau" }, { Lang::FR,
+							"Moscou" }, { Lang::IT, "Mosca" } }, 89 }, {
+					"Moscow", "Russia", { { Lang::DE, "Moskau" }, { Lang::FR,
+							"Moscou" }, { Lang::IT, "Mosca" } }, 89 }, {
+					"Russia", "Eurasia", { { Lang::DE, "Russland" }, { Lang::FR,
+							"Russie" }, { Lang::IT, "Russia" } }, 89 }, })
+			<< endl;
 
-	cout << mass;
+	cout
+			<< FindMaxRepetitionCount( { { "Moscow", "Russia", { { Lang::DE,
+					"Moskau" }, { Lang::FR, "Moscou" }, { Lang::IT, "Mosca" } },
+					89 }, { "Russia", "Eurasia", { { Lang::DE, "Russland" }, {
+					Lang::FR, "Russie" }, { Lang::IT, "Russia" } }, 89 }, {
+					"Moscow", "Russia", { { Lang::DE, "Moskau" }, { Lang::FR,
+							"Moscou deux" }, { Lang::IT, "Mosca" } }, 89 }, {
+					"Moscow", "Toulouse", { { Lang::DE, "Moskau" }, { Lang::FR,
+							"Moscou" }, { Lang::IT, "Mosca" } }, 89 }, {
+					"Moscow", "Russia", { { Lang::DE, "Moskau" }, { Lang::FR,
+							"Moscou" }, { Lang::IT, "Mosca" } }, 31 }, })
+			<< endl;
+
+	cout << FindMaxRepetitionCount( { }) << endl;
 
 	return 0;
 }
