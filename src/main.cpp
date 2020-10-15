@@ -1,3 +1,6 @@
+/*
+ * commented for task. task in file test_equation.cpp
+
 #include "test_runner.h"
 
 void TestAll() {
@@ -10,3 +13,4 @@ int main() {
 
 	return 0;
 }
+*/
