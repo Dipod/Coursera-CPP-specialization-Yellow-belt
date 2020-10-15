@@ -93,74 +93,30 @@ private:
 	int fail_count = 0;
 };
 /*
-class Rational {
-public:
-	// Вы можете вставлять сюда различные реализации,
-	// чтобы проверить, что ваши тесты пропускают корректный код
-	// и ловят некорректный
-
-	Rational();
-	Rational(int numerator, int denominator) {
-	}
-
-	int Numerator() const {
-		return 0;
-	}
-
-	int Denominator() const {
-		return 0;
-	}
-};
+bool IsPalindrom(const string &str) {
+	return true;
+}
 */
-void TestRational() {
-
-	{
-		Rational x;
-		AssertEqual(x.Numerator(), 0, "default constructor numerator = 0");
-		AssertEqual(x.Denominator(), 1, "default constructor denominator = 1");
-	}
-
-	{
-		Rational x(2, 6);
-		AssertEqual(x.Numerator(), 1, "numerator for 2/6");
-		AssertEqual(x.Denominator(), 3, "denominator for 2/6");
-	}
-
-	{
-		Rational x(-2, 6);
-		AssertEqual(x.Numerator(), -1, "numerator for -2/6");
-		AssertEqual(x.Denominator(), 3, "denominator for -2/6");
-	}
-
-	{
-		Rational x(2, -6);
-		AssertEqual(x.Numerator(), -1, "numerator for 2/-6");
-		AssertEqual(x.Denominator(), 3, "denominator for 2/-6");
-	}
-
-	{
-		Rational x(-2, -6);
-		AssertEqual(x.Numerator(), 1, "numerator for -2/-6");
-		AssertEqual(x.Denominator(), 3, "denominator for -2/-6");
-	}
-
-	{
-		Rational x(0, -6);
-		AssertEqual(x.Numerator(), 0, "numerator for 0/-6");
-		AssertEqual(x.Denominator(), 1, "denominator for 0/-6");
-	}
-
-	{
-		Rational x(0, 6);
-		AssertEqual(x.Numerator(), 0, "numerator for 0/6");
-		AssertEqual(x.Denominator(), 1, "denominator for 0/6");
-	}
-
+void TestPalindrom() {
+	Assert(IsPalindrom("madam"), "madam from task");
+	Assert(IsPalindrom("level"), "level from task");
+	Assert(IsPalindrom("wasitacaroracatisaw"), "wasitacaroracatisaw from task");
+	Assert(IsPalindrom(""), "empty string");
+	Assert(IsPalindrom(" "), "space");
+	Assert(IsPalindrom("a"), "one symbol");
+	Assert(IsPalindrom(" a "), "space one symbol space");
+	Assert(IsPalindrom(" aa "), "space aa space");
+	Assert(!IsPalindrom(" aa"), "space aa");
+	Assert(!IsPalindrom("aa "), "aa space");
+	Assert(!IsPalindrom("palindrom"), "palindrom");
+	Assert(!IsPalindrom("aAA"), "aAA");
+	Assert(IsPalindrom("aAa"), "aAa");
+	Assert(IsPalindrom("121"), "121");
 }
 
 void TestAll() {
 	TestRunner tr;
-	tr.RunTest(TestRational, "Test rational");
+	tr.RunTest(TestPalindrom, "Test palindrom");
 }
 
 int main() {
