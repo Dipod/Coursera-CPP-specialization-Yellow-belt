@@ -5,7 +5,6 @@
 #include <set>
 #include <sstream>
 #include <exception>
-#include "tests.h"
 
 template<class T>
 std::ostream& operator <<(std::ostream &os, const std::set<T> &s);

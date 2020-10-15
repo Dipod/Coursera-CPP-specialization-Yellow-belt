@@ -1,7 +1,12 @@
-/*
- * commented for task. task in file test_equation.cpp
-
 #include "test_runner.h"
+
+// Tests section
+
+void TestSomething() {
+	AssertEqual(1, 1, "1 = 1 test");
+}
+
+// End of tests section
 
 void TestAll() {
 	TestRunner tr;
@@ -13,4 +18,4 @@ int main() {
 
 	return 0;
 }
-*/
+
