@@ -93,87 +93,77 @@ private:
 	int fail_count = 0;
 };
 /*
-class Person {
+class Rational {
 public:
-	// Вы можете вставлять сюда различные реализации класса,
+	// Вы можете вставлять сюда различные реализации,
 	// чтобы проверить, что ваши тесты пропускают корректный код
 	// и ловят некорректный
-	void ChangeFirstName(int year, const string &first_name) {
+
+	Rational();
+	Rational(int numerator, int denominator) {
 	}
-	void ChangeLastName(int year, const string &last_name) {
+
+	int Numerator() const {
+		return 0;
 	}
-	string GetFullName(int year) {
-		return "";
+
+	int Denominator() const {
+		return 0;
 	}
 };
 */
-void TestPerson() {
+void TestRational() {
+
 	{
-		Person person;
-		AssertEqual(person.GetFullName(0), "Incognito",
-				"Test empty person with 0 year");
+		Rational x;
+		AssertEqual(x.Numerator(), 0, "default constructor numerator = 0");
+		AssertEqual(x.Denominator(), 1, "default constructor denominator = 1");
 	}
 
 	{
-		Person person;
-		AssertEqual(person.GetFullName(-1), "Incognito",
-				"Test empty person with -1 year");
+		Rational x(2, 6);
+		AssertEqual(x.Numerator(), 1, "numerator for 2/6");
+		AssertEqual(x.Denominator(), 3, "denominator for 2/6");
 	}
 
 	{
-		Person person;
-		AssertEqual(person.GetFullName(1), "Incognito",
-				"Test empty person with 1 year");
+		Rational x(-2, 6);
+		AssertEqual(x.Numerator(), -1, "numerator for -2/6");
+		AssertEqual(x.Denominator(), 3, "denominator for -2/6");
 	}
 
 	{
-		Person person;
-		person.ChangeFirstName(1, "Boom");
-		AssertEqual(person.GetFullName(1), "Boom with unknown last name",
-				"Simple change first name");
-		AssertEqual(person.GetFullName(0), "Incognito",
-				"Simple change first name but request before change");
+		Rational x(2, -6);
+		AssertEqual(x.Numerator(), -1, "numerator for 2/-6");
+		AssertEqual(x.Denominator(), 3, "denominator for 2/-6");
 	}
 
 	{
-		Person person;
-		person.ChangeLastName(1, "Boom");
-		AssertEqual(person.GetFullName(1), "Boom with unknown first name",
-				"Simple change last name");
-		AssertEqual(person.GetFullName(0), "Incognito",
-				"Simple change last name but request before change");
+		Rational x(-2, -6);
+		AssertEqual(x.Numerator(), 1, "numerator for -2/-6");
+		AssertEqual(x.Denominator(), 3, "denominator for -2/-6");
 	}
 
 	{
-		Person person;
-		person.ChangeFirstName(1, "First");
-		person.ChangeLastName(2, "Last");
-		AssertEqual(person.GetFullName(2), "First Last",
-				"Simple change Full name request in same year");
-		AssertEqual(person.GetFullName(3), "First Last",
-				"Simple change Full name request in future");
-		person.ChangeLastName(3, "Last2");
-		AssertEqual(person.GetFullName(3), "First Last2",
-				"Second change Last name");
-		AssertEqual(person.GetFullName(0), "Incognito",
-				"Request full name after changes in future");
-		AssertEqual(person.GetFullName(2), "First Last",
-				"request 2 year before secon change last name");
-		person.ChangeLastName(0, "God");
-		AssertEqual(person.GetFullName(0), "God with unknown first name",
-				"request after change in past");
-		AssertEqual(person.GetFullName(3), "First Last2",
-				"request in future after change in past");
+		Rational x(0, -6);
+		AssertEqual(x.Numerator(), 0, "numerator for 0/-6");
+		AssertEqual(x.Denominator(), 1, "denominator for 0/-6");
 	}
+
+	{
+		Rational x(0, 6);
+		AssertEqual(x.Numerator(), 0, "numerator for 0/6");
+		AssertEqual(x.Denominator(), 1, "denominator for 0/6");
+	}
+
 }
 
 void TestAll() {
 	TestRunner tr;
-	tr.RunTest(TestPerson, "Test person");
+	tr.RunTest(TestRational, "Test rational");
 }
 
 int main() {
 	TestAll();
-	// добавьте сюда свои тесты
 	return 0;
 }
