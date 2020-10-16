@@ -5,12 +5,16 @@
 #include <set>
 #include <sstream>
 #include <exception>
+#include <vector>
 
 template<class T>
 std::ostream& operator <<(std::ostream &os, const std::set<T> &s);
 
 template<class K, class V>
 std::ostream& operator <<(std::ostream &os, const std::map<K, V> &m);
+
+template<class V>
+std::ostream& operator <<(std::ostream &os, const std::vector<V> &m);
 
 template<class T, class U>
 void AssertEqual(const T &t, const U &u, const std::string &hint);
@@ -27,6 +31,20 @@ public:
 private:
 	int fail_count = 0;
 };
+
+template<class V>
+std::ostream& operator <<(std::ostream &os, const std::vector<V> &v) {
+	os << "{";
+	bool first = true;
+	for (const auto &x : v) {
+		if (!first) {
+			os << ", ";
+		}
+		first = false;
+		os << x;
+	}
+	return os << "}";
+}
 
 template<class T>
 std::ostream& operator <<(std::ostream &os, const std::set<T> &s) {
