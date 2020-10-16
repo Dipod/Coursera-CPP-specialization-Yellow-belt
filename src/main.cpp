@@ -1,33 +1,82 @@
 #include "test_runner.h"
-#include "sum_reverse_sort.h"
 #include <vector>
+#include "phone_number.h"
+#include <stdexcept>
 
 using namespace std;
 
 // Tests section
 
-void TestSort() {
-	vector<int> v = { 3, 2, 1 }, sorted = { 1, 2, 3 };
+void TestPhoneNumber() {
 
-	Sort(v);
-	AssertEqual(v, sorted, "{3,2,1} sort test");
-}
+	{
+		PhoneNumber p("+7-495-111-22-33");
+		AssertEqual(p.GetCountryCode(), "7",
+				"Country code of number +7-495-111-22-33");
+		AssertEqual(p.GetCityCode(), "495",
+				"City code of number +7-495-111-22-33");
+		AssertEqual(p.GetLocalNumber(), "111-22-33",
+				"Local number of number +7-495-111-22-33");
+		AssertEqual(p.GetInternationalNumber(), "+7-495-111-22-33",
+				"International number of number +7-495-111-22-33");
+	}
 
-void TestSum() {
-	AssertEqual(Sum(1, 2), 3, "1 + 2 test");
-}
+	{
+		PhoneNumber p("+7-495-1112233");
+		AssertEqual(p.GetCountryCode(), "7",
+				"Country code of number +7-495-1112233");
+		AssertEqual(p.GetCityCode(), "495",
+				"City code of number +7-495-1112233");
+		AssertEqual(p.GetLocalNumber(), "1112233",
+				"Local number of number +7-495-1112233");
+		AssertEqual(p.GetInternationalNumber(), "+7-495-1112233",
+				"International number of number +7-495-1112233");
+	}
 
-void TestReverse() {
-	AssertEqual(Reverse("123"), "321", "123 reverse test");
+	{
+		PhoneNumber p("+323-22-460002");
+		AssertEqual(p.GetCountryCode(), "323",
+				"Country code of number +323-22-460002");
+		AssertEqual(p.GetCityCode(), "22",
+				"City code of number +323-22-460002");
+		AssertEqual(p.GetLocalNumber(), "460002",
+				"Local number of number +323-22-460002");
+		AssertEqual(p.GetInternationalNumber(), "+323-22-460002",
+				"International number of number +323-22-460002");
+	}
+
+	{
+		PhoneNumber p("+1-2-coursera-cpp");
+		AssertEqual(p.GetCountryCode(), "1",
+				"Country code of number +1-2-coursera-cpp");
+		AssertEqual(p.GetCityCode(), "2",
+				"City code of number +1-2-coursera-cpp");
+		AssertEqual(p.GetLocalNumber(), "coursera-cpp",
+				"Local number of number +1-2-coursera-cpp");
+		AssertEqual(p.GetInternationalNumber(), "+1-2-coursera-cpp",
+				"International number of number +1-2-coursera-cpp");
+	}
+
+	{
+		try {
+			PhoneNumber p("1-2-333");
+		} catch (invalid_argument &ex) {
+		}
+	}
+
+	{
+		try {
+			PhoneNumber p("+7-1233");
+		} catch (invalid_argument &ex) {
+		}
+	}
 }
 
 // End of tests section
 
 void TestAll() {
 	TestRunner tr;
-	tr.RunTest(TestSort, "TestSort");
-	tr.RunTest(TestSum, "TestSum");
-	tr.RunTest(TestReverse, "TestReverse");
+	tr.RunTest(TestPhoneNumber, "TestPhoneNumber");
 }
 
 int main() {
