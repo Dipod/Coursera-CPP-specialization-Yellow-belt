@@ -1,34 +1,69 @@
 #include <iostream>
-#include <cassert>
-#include "query.h"
-#include "bus_manager.h"
+#include <algorithm>
+#include <vector>
+#include "test_runner.h"
 
 using namespace std;
 
-int main() {
-	int query_count;
-	Query q;
+vector<int> GetVectorPart(const vector<int> &numbers) {
+	auto it = find_if(numbers.begin(), numbers.end(), [](const int &number) {
+		return number < 0;
+	});
+	vector<int> result;
+	result.assign(numbers.begin(), it);
+	reverse(result.begin(), result.end());
+	return result;
+}
 
-	cin >> query_count;
-
-	BusManager bm;
-	for (int i = 0; i < query_count; ++i) {
-		cin >> q;
-		switch (q.type) {
-		case QueryType::NewBus:
-			bm.AddBus(q.bus, q.stops);
-			break;
-		case QueryType::BusesForStop:
-			cout << bm.GetBusesForStop(q.stop) << endl;
-			break;
-		case QueryType::StopsForBus:
-			cout << bm.GetStopsForBus(q.bus) << endl;
-			break;
-		case QueryType::AllBuses:
-			cout << bm.GetAllBuses() << endl;
-			break;
+void PrintVectorPart(const vector<int> &numbers) {
+	bool first = true;
+	for (const auto &item : GetVectorPart(numbers)) {
+		if (!first) {
+			cout << ' ';
 		}
+		cout << item;
+		first = false;
 	}
+}
+
+// Tests section
+
+void TestGetVectorPart() {
+	{
+		vector<int> n = { 8, 1, 6 };
+		AssertEqual(GetVectorPart( { 6, 1, 8, -5, 4 }), n,
+				"Test vector { 6, 1, 8, -5, 4 }");
+	}
+
+	{
+		vector<int> n;
+		AssertEqual(GetVectorPart( { -6, 1, 8, -5, 4 }), n,
+				"Test vector { -6, 1, 8, -5, 4 }");
+	}
+
+	{
+		vector<int> n = { 4, 5, 8, 1, 6 };
+		AssertEqual(GetVectorPart( { 6, 1, 8, 5, 4 }), n,
+				"Test vector { 6, 1, 8, 5, 4 }");
+	}
+}
+
+// End of tests section
+
+void TestAll() {
+	TestRunner tr;
+	tr.RunTest(TestGetVectorPart, "Test TestGetVectorPart");
+}
+
+int main() {
+	TestAll();
+
+	PrintVectorPart( { 6, 1, 8, -5, 4 });
+	cout << endl;
+	PrintVectorPart( { -6, 1, 8, -5, 4 });
+	cout << endl;
+	PrintVectorPart( { 6, 1, 8, 5, 4 });
+	cout << endl;
 
 	return 0;
 }
