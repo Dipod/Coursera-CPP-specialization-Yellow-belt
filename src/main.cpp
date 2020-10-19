@@ -1,53 +1,59 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <set>
 #include <string>
 #include "test_runner.h"
 
 using namespace std;
 
-template<typename T>
-vector<T> FindGreaterElements(const set<T> &elements, const T &border) {
+vector<string> SplitIntoWords(const string &s) {
 
-	auto it = find_if(begin(elements), end(elements), [&border](const T &item) {
-		return item > border;
-	});
+	auto it1 = begin(s), it2 = begin(s);
+	vector<string> result;
 
-	vector<T> result;
-	result.assign(it, end(elements));
+	while (it2 != end(s)) {
+		if (it2 != begin(s)) {
+			it2++;
+		}
+		it1 = it2;
+		it2 = find(it2, end(s), ' ');
+		result.push_back(string(it1, it2));
+	}
+
 	return result;
 }
 
 // Tests section
 
-void TestFindGreaterElements() {
+void TestSplitIntoWords() {
 
-	AssertEqual(FindGreaterElements(set<int> { 1, 5, 7, 8 }, 5), vector<int> {
-			7, 8 }, "Test set of { 1, 5, 7, 8 }");
-	string to_find = "Python";
-	AssertEqual(FindGreaterElements(set<string> { "C", "C++" }, to_find),
-			vector<string> { }, "Test set of { C, C++ }");
-
+	string s = "C Cpp Java Python";
+	AssertEqual(SplitIntoWords(s),
+			vector<string> { "C", "Cpp", "Java", "Python" },
+			"Test string C Cpp Java Python");
 }
 
 // End of tests section
 
 void TestAll() {
 	TestRunner tr;
-	tr.RunTest(TestFindGreaterElements, "Test FindGreaterElements");
+	tr.RunTest(TestSplitIntoWords, "Test SplitIntoWords");
 }
 
 int main() {
 	TestAll();
 
-	for (int x : FindGreaterElements(set<int> { 1, 5, 7, 8 }, 5)) {
-		cout << x << " ";
+	string s = "C Cpp Java Python";
+
+	vector<string> words = SplitIntoWords(s);
+	cout << words.size() << " ";
+	for (auto it = begin(words); it != end(words); ++it) {
+		if (it != begin(words)) {
+			cout << "/";
+		}
+		cout << *it;
 	}
 	cout << endl;
 
-	string to_find = "Python";
-	cout << FindGreaterElements(set<string> { "C", "C++" }, to_find).size()
-			<< endl;
 	return 0;
 }
