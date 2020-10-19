@@ -1,24 +1,24 @@
-Напишите функцию PrintVectorPart, принимающую вектор целых чисел numbers,
-выполняющую поиск первого отрицательного числа в нём и выводящую в стандартный вывод все числа,
-расположенные левее найденного, в обратном порядке. Если вектор не содержит отрицательных чисел,
-выведите все числа в обратном порядке.
+Напишите шаблонную функцию FindGreaterElements,
+принимающую множество elements объектов типа T и ещё один объект border типа T
+и возвращающую вектор из всех элементов множества, бо́льших border, в возрастающем порядке.
 
-void PrintVectorPart(const vector<int>& numbers);
+template <typename T>
+vector<T> FindGreaterElements(const set<T>& elements, const T& border);
 
 Пример кода
 
 int main() {
-  PrintVectorPart({6, 1, 8, -5, 4});
+  for (int x : FindGreaterElements(set<int>{1, 5, 7, 8}, 5)) {
+    cout << x << " ";
+  }
   cout << endl;
-  PrintVectorPart({-6, 1, 8, -5, 4});  // ничего не выведется
-  cout << endl;
-  PrintVectorPart({6, 1, 8, 5, 4});
-  cout << endl;
+  
+  string to_find = "Python";
+  cout << FindGreaterElements(set<string>{"C", "C++"}, to_find).size() << endl;
   return 0;
 }
 
 Вывод
 
-8 1 6
-
-4 5 8 1 6
+7 8
+0
