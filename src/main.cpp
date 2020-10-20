@@ -2,58 +2,43 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <set>
 #include "test_runner.h"
 
 using namespace std;
 
-vector<string> SplitIntoWords(const string &s) {
-
-	auto it1 = begin(s), it2 = begin(s);
-	vector<string> result;
-
-	while (it2 != end(s)) {
-		if (it2 != begin(s)) {
-			it2++;
-		}
-		it1 = it2;
-		it2 = find(it2, end(s), ' ');
-		result.push_back(string(it1, it2));
-	}
-
-	return result;
+template<typename T>
+void RemoveDuplicates(vector<T> &elements) {
+	set<T> s(begin(elements), end(elements));
+	elements.assign(begin(s), end(s));
 }
 
 // Tests section
 
-void TestSplitIntoWords() {
+void TestSomething() {
 
-	string s = "C Cpp Java Python";
-	AssertEqual(SplitIntoWords(s),
-			vector<string> { "C", "Cpp", "Java", "Python" },
-			"Test string C Cpp Java Python");
 }
 
 // End of tests section
 
 void TestAll() {
 	TestRunner tr;
-	tr.RunTest(TestSplitIntoWords, "Test SplitIntoWords");
+	tr.RunTest(TestSomething, "Test SplitIntoWords");
 }
 
 int main() {
-	TestAll();
-
-	string s = "C Cpp Java Python";
-
-	vector<string> words = SplitIntoWords(s);
-	cout << words.size() << " ";
-	for (auto it = begin(words); it != end(words); ++it) {
-		if (it != begin(words)) {
-			cout << "/";
-		}
-		cout << *it;
+	vector<int> v1 = { 6, 4, 7, 6, 4, 4, 0, 1 };
+	RemoveDuplicates(v1);
+	for (int x : v1) {
+		cout << x << " ";
 	}
 	cout << endl;
 
+	vector<string> v2 = { "C", "C++", "C++", "C", "C++" };
+	RemoveDuplicates(v2);
+	for (const string &s : v2) {
+		cout << s << " ";
+	}
+	cout << endl;
 	return 0;
 }
