@@ -1,8 +1,6 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <string>
-#include <set>
 #include "test_runner.h"
 
 using namespace std;
@@ -23,22 +21,33 @@ void TestSomething() {
 
 void TestAll() {
 	TestRunner tr;
-	tr.RunTest(TestSomething, "Test SplitIntoWords");
+	tr.RunTest(TestSomething, "Test TestSomething");
+}
+
+ostream& operator<<(ostream &output, const vector<int> &v) {
+	for (auto it = begin(v); it < end(v); it++) {
+		if (it != begin(v)) {
+			output << ' ';
+		}
+		output << *it;
+	}
+	return output;
 }
 
 int main() {
-	vector<int> v1 = { 6, 4, 7, 6, 4, 4, 0, 1 };
-	RemoveDuplicates(v1);
-	for (int x : v1) {
-		cout << x << " ";
-	}
-	cout << endl;
 
-	vector<string> v2 = { "C", "C++", "C++", "C", "C++" };
-	RemoveDuplicates(v2);
-	for (const string &s : v2) {
-		cout << s << " ";
+	int n;
+	cin >> n;
+	vector<int> permutation(n);
+	for (auto &item : permutation) {
+		item = n--;
 	}
-	cout << endl;
+
+	cout << permutation << endl;
+
+	while (prev_permutation(begin(permutation), end(permutation))) {
+		cout << permutation << endl;
+	}
+
 	return 0;
 }
