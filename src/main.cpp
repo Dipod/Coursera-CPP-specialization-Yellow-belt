@@ -1,46 +1,36 @@
 #include <iostream>
-#include <algorithm>
-#include <set>
-#include "test_runner.h"
+#include <map>
 
-using namespace std;
+typedef std::map<int, std::string> NamesByYears;
 
-set<int>::const_iterator FindNearestElement(const set<int> &numbers,
-		int border) {
-
-	if (numbers.empty()) {
-		return numbers.end();
-	}
-
-	auto element = numbers.lower_bound(border);
-
-	if (element == numbers.end()) {
-		return prev(numbers.end());
-	}
-
-	if (element == numbers.begin()) {
-		return numbers.begin();
-	}
-
-	auto prev_element = prev(element);
-
-	if (border - *prev_element <= *element - border) {
-		return prev_element;
-	} else {
-		return element;
-	}
-}
+class Person {
+public:
+	void ChangeFirstName(const int &year, const std::string &first_name);
+	void ChangeLastName(const int &year, const std::string &last_name);
+	std::string GetFullName(const int &year) const;
+private:
+	NamesByYears first_name_changes;
+	NamesByYears last_name_changes;
+};
 
 int main() {
-	set<int> numbers = { 1, 4, 6 };
-	cout << *FindNearestElement(numbers, 0) << " "
-			<< *FindNearestElement(numbers, 3) << " "
-			<< *FindNearestElement(numbers, 5) << " "
-			<< *FindNearestElement(numbers, 6) << " "
-			<< *FindNearestElement(numbers, 100) << endl;
+	Person person;
 
-	set<int> empty_set;
+	person.ChangeFirstName(1965, "Polina");
+	person.ChangeLastName(1967, "Sergeeva");
+	for (int year : { 1900, 1965, 1990 }) {
+		std::cout << person.GetFullName(year) << std::endl;
+	}
 
-	cout << (FindNearestElement(empty_set, 8) == end(empty_set)) << endl;
+	person.ChangeFirstName(1970, "Appolinaria");
+	for (int year : { 1969, 1970 }) {
+		std::cout << person.GetFullName(year) << std::endl;
+	}
+
+	person.ChangeLastName(1968, "Volkova");
+	for (int year : { 1969, 1970 }) {
+		std::cout << person.GetFullName(year) << std::endl;
+	}
+
 	return 0;
 }
