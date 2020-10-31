@@ -1,36 +1,47 @@
 #include <iostream>
-#include <map>
+#include <utility>
+#include <vector>
+#include <string>
+#include <algorithm>
 
-typedef std::map<int, std::string> NamesByYears;
+using namespace std;
 
-class Person {
-public:
-	void ChangeFirstName(const int &year, const std::string &first_name);
-	void ChangeLastName(const int &year, const std::string &last_name);
-	std::string GetFullName(const int &year) const;
-private:
-	NamesByYears first_name_changes;
-	NamesByYears last_name_changes;
-};
+template<typename RandomIt>
+pair<RandomIt, RandomIt> FindStartsWith(RandomIt range_begin,
+		RandomIt range_end, char prefix) {
+
+	struct PrefixComparator {
+		bool operator()(const string &s, const char &i) const {
+			return s[0] < i;
+		}
+		bool operator()(const char &i, const string &s) const {
+			return i < s[0];
+		}
+	};
+
+	return equal_range(range_begin, range_end, prefix, PrefixComparator { });
+
+}
 
 int main() {
-	Person person;
+	const vector<string> sorted_strings = { "moscow", "murmansk", "vologda" };
 
-	person.ChangeFirstName(1965, "Polina");
-	person.ChangeLastName(1967, "Sergeeva");
-	for (int year : { 1900, 1965, 1990 }) {
-		std::cout << person.GetFullName(year) << std::endl;
+	const auto m_result = FindStartsWith(begin(sorted_strings),
+			end(sorted_strings), 'm');
+	for (auto it = m_result.first; it != m_result.second; ++it) {
+		cout << *it << " ";
 	}
+	cout << endl;
 
-	person.ChangeFirstName(1970, "Appolinaria");
-	for (int year : { 1969, 1970 }) {
-		std::cout << person.GetFullName(year) << std::endl;
-	}
+	const auto p_result = FindStartsWith(begin(sorted_strings),
+			end(sorted_strings), 'p');
+	cout << (p_result.first - begin(sorted_strings)) << " "
+			<< (p_result.second - begin(sorted_strings)) << endl;
 
-	person.ChangeLastName(1968, "Volkova");
-	for (int year : { 1969, 1970 }) {
-		std::cout << person.GetFullName(year) << std::endl;
-	}
+	const auto z_result = FindStartsWith(begin(sorted_strings),
+			end(sorted_strings), 'z');
+	cout << (z_result.first - begin(sorted_strings)) << " "
+			<< (z_result.second - begin(sorted_strings)) << endl;
 
 	return 0;
 }
