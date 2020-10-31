@@ -19,8 +19,6 @@ std::ostream& operator <<(std::ostream &os, const std::vector<V> &m);
 template<class T, class U>
 void AssertEqual(const T &t, const U &u, const std::string &hint);
 
-inline void Assert(bool b, const std::string &hint);
-
 class TestRunner {
 public:
 	template<class TestFunc>
@@ -93,3 +91,5 @@ void TestRunner::RunTest(TestFunc func, const std::string &test_name) {
 		std::cerr << test_name << " fail: " << e.what() << std::endl;
 	}
 }
+
+void Assert(bool b, const std::string &hint);

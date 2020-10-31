@@ -1,6 +1,6 @@
 #include "test_runner.h"
 
-inline void Assert(bool b, const std::string &hint) {
+void Assert(bool b, const std::string &hint) {
 	AssertEqual(b, true, hint);
 }
 
