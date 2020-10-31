@@ -15,14 +15,18 @@ void MergeSort(RandomIt range_begin, RandomIt range_end) {
 	}
 
 	vector<typename RandomIt::value_type> elements(range_begin, range_end);
-	auto half_it = elements.begin() + range_length / 2;
-	MergeSort(elements.begin(), half_it);
-	MergeSort(half_it, elements.end());
-	merge(elements.begin(), half_it, half_it, elements.end(), range_begin);
+	auto it1 = elements.begin() + range_length / 3;
+	auto it2 = it1 + range_length / 3;
+	MergeSort(elements.begin(), it1);
+	MergeSort(it1, it2);
+	MergeSort(it2, elements.end());
+	vector<typename RandomIt::value_type> temp;
+	merge(elements.begin(), it1, it1, it2, back_inserter(temp));
+	merge(temp.begin(), temp.end(), it2, elements.end(), range_begin);
 }
 
 int main() {
-	vector<int> v = { 6, 4, 7, 6, 4, 4, 0, 1 };
+	vector<int> v = { 6, 4, 7, 6, 4, 4, 0, 1, 5 };
 	MergeSort(begin(v), end(v));
 	for (int x : v) {
 		cout << x << " ";
