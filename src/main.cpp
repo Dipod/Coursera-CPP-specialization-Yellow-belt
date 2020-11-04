@@ -1,56 +1,122 @@
 #include <iostream>
-#include <string>
+#include <vector>
+#include <memory>
+#include <iomanip>
+#include <cmath>
 
 using namespace std;
 
-void SendSms(const string &number, const string &message) {
-	cout << "Send '" << message << "' to number " << number << endl;
-}
+const double PI = 3.14;
 
-void SendEmail(const string &email, const string &message) {
-	cout << "Send '" << message << "' to e-mail " << email << endl;
-}
-
-class INotifier {
+class Figure {
 public:
-	virtual ~INotifier() {
-	}
-	virtual void Notify(const string &message) const = 0;
+	virtual string Name() const = 0;
+	virtual double Perimeter() const = 0;
+	virtual double Area() const = 0;
 };
 
-class SmsNotifier: public INotifier {
+class Triangle: public Figure {
 public:
-	SmsNotifier(const string &phone_number) :
-			phone_number_(phone_number) {
+	Triangle(const double &a, const double &b, const double &c) :
+			a_(a), b_(b), c_(c) {
 	}
-	void Notify(const string &message) const override {
-		SendSms(phone_number_, message);
+
+	string Name() const override {
+		return name_;
+	}
+
+	double Perimeter() const override {
+		return a_ + b_ + c_;
+	}
+
+	double Area() const override {
+		double p = (a_ + b_ + c_) / 2.;
+		return sqrt(p * (p - a_) * (p - b_) * (p - c_));
 	}
 private:
-	const string phone_number_;
+	const double a_, b_, c_;
+	const string name_ = "TRIANGLE";
 };
 
-class EmailNotifier: public INotifier {
+class Rect: public Figure {
 public:
-	EmailNotifier(const string &email_adress) :
-			email_adress_(email_adress) {
+	Rect(const double &width, const double &height) :
+			width_(width), height_(height) {
 	}
-	void Notify(const string &message) const override {
-		SendEmail(email_adress_, message);
+
+	string Name() const override {
+		return name_;
+	}
+
+	double Perimeter() const override {
+		return 2. * (width_ + height_);
+	}
+
+	double Area() const override {
+		return width_ * height_;
 	}
 private:
-	const string email_adress_;
+	const double width_, height_;
+	const string name_ = "RECT";
 };
 
-void Notify(INotifier &notifier, const string &message) {
-	notifier.Notify(message);
+class Circle: public Figure {
+public:
+	Circle(const double &r) :
+			r_(r) {
+	}
+
+	string Name() const override {
+		return name_;
+	}
+
+	double Perimeter() const override {
+		return 2. * PI * r_;
+	}
+
+	double Area() const override {
+		return PI * pow(r_, 2.);
+	}
+private:
+	const double r_;
+	const string name_ = "CIRCLE";
+};
+
+shared_ptr<Figure> CreateFigure(istream &input) {
+	string type = "";
+	input >> type;
+	if (type == "TRIANGLE") {
+		double a, b, c;
+		input >> a >> b >> c;
+		return make_shared<Triangle>(a, b, c);
+	} else if (type == "RECT") {
+		double width, height;
+		input >> width >> height;
+		return make_shared<Rect>(width, height);
+	} else if (type == "CIRCLE") {
+		double r;
+		input >> r;
+		return make_shared<Circle>(r);
+	}
 }
 
 int main() {
-	SmsNotifier sms { "+7-495-777-77-77" };
-	EmailNotifier email { "na-derevnyu@dedushke.ru" };
+	vector<shared_ptr<Figure>> figures;
+	for (string line; getline(cin, line);) {
+		istringstream is(line);
 
-	Notify(sms, "I have White belt in C++");
-	Notify(email, "And want a Yellow one");
+		string command;
+		is >> command;
+		if (command == "ADD") {
+			is >> ws;
+			figures.push_back(CreateFigure(is));
+		} else if (command == "PRINT") {
+			for (const auto &current_figure : figures) {
+				cout << fixed << setprecision(3) << current_figure->Name()
+						<< " " << current_figure->Perimeter() << " "
+						<< current_figure->Area() << endl;
+			}
+		}
+	}
 	return 0;
 }
