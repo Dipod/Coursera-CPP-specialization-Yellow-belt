@@ -1,122 +1,87 @@
 #include <iostream>
+#include <string>
 #include <vector>
-#include <memory>
-#include <iomanip>
-#include <cmath>
 
 using namespace std;
 
-const double PI = 3.14;
-
-class Figure {
+class Person {
 public:
-	virtual string Name() const = 0;
-	virtual double Perimeter() const = 0;
-	virtual double Area() const = 0;
+	Person(const string &name, const string &outputPrefix) :
+			Name(name), PersonType(outputPrefix) {
+	}
+	virtual ~Person() = default;
+	virtual void Walk(const string &destination) const {
+		cout << PersonType << ": " << Name << " walks to: " << destination
+				<< endl;
+	}
+	;
+public:
+	const string Name;
+	const string PersonType;
 };
 
-class Triangle: public Figure {
+class Student: public Person {
 public:
-	Triangle(const double &a, const double &b, const double &c) :
-			a_(a), b_(b), c_(c) {
+	Student(const string &name, const string &favouriteSong) :
+			Person(name, "Student"), FavouriteSong(favouriteSong) {
 	}
 
-	string Name() const override {
-		return name_;
+	void Learn() const {
+		cout << PersonType << ": " << Name << " learns" << endl;
 	}
 
-	double Perimeter() const override {
-		return a_ + b_ + c_;
+	void Walk(const string &destination) const override {
+		cout << PersonType << ": " << Name << " walks to: " << destination
+				<< endl;
+		SingSong();
 	}
 
-	double Area() const override {
-		double p = (a_ + b_ + c_) / 2.;
-		return sqrt(p * (p - a_) * (p - b_) * (p - c_));
+	void SingSong() const {
+		cout << PersonType << ": " << Name << " sings a song: " << FavouriteSong
+				<< endl;
 	}
 private:
-	const double a_, b_, c_;
-	const string name_ = "TRIANGLE";
+	const string FavouriteSong;
 };
 
-class Rect: public Figure {
+class Teacher: public Person {
 public:
-	Rect(const double &width, const double &height) :
-			width_(width), height_(height) {
+	Teacher(const string &name, const string &subject) :
+			Person(name, "Teacher") {
 	}
 
-	string Name() const override {
-		return name_;
-	}
-
-	double Perimeter() const override {
-		return 2. * (width_ + height_);
-	}
-
-	double Area() const override {
-		return width_ * height_;
+	void Teach() const {
+		cout << PersonType << ": " << Name << " teaches: " << Subject << endl;
 	}
 private:
-	const double width_, height_;
-	const string name_ = "RECT";
+	const string Subject;
 };
 
-class Circle: public Figure {
+class Policeman: public Person {
 public:
-	Circle(const double &r) :
-			r_(r) {
+	Policeman(const string &name) :
+			Person(name, "Policeman") {
 	}
 
-	string Name() const override {
-		return name_;
+	void Check(const Person &p) const {
+		cout << PersonType << ": " << Name << " checks " << p.PersonType << ". "
+				<< p.PersonType << "'s name is: " << p.Name << endl;
 	}
-
-	double Perimeter() const override {
-		return 2. * PI * r_;
-	}
-
-	double Area() const override {
-		return PI * pow(r_, 2.);
-	}
-private:
-	const double r_;
-	const string name_ = "CIRCLE";
 };
 
-shared_ptr<Figure> CreateFigure(istream &input) {
-	string type = "";
-	input >> type;
-	if (type == "TRIANGLE") {
-		double a, b, c;
-		input >> a >> b >> c;
-		return make_shared<Triangle>(a, b, c);
-	} else if (type == "RECT") {
-		double width, height;
-		input >> width >> height;
-		return make_shared<Rect>(width, height);
-	} else if (type == "CIRCLE") {
-		double r;
-		input >> r;
-		return make_shared<Circle>(r);
+void VisitPlaces(const Person &p, const vector<string> &places) {
+	for (const auto &place : places) {
+		p.Walk(place);
 	}
 }
 
 int main() {
-	vector<shared_ptr<Figure>> figures;
-	for (string line; getline(cin, line);) {
-		istringstream is(line);
+	Teacher t("Jim", "Math");
+	Student s("Ann", "We will rock you");
+	Policeman p("Bob");
 
-		string command;
-		is >> command;
-		if (command == "ADD") {
-			is >> ws;
-			figures.push_back(CreateFigure(is));
-		} else if (command == "PRINT") {
-			for (const auto &current_figure : figures) {
-				cout << fixed << setprecision(3) << current_figure->Name()
-						<< " " << current_figure->Perimeter() << " "
-						<< current_figure->Area() << endl;
-			}
-		}
-	}
+	VisitPlaces(t, { "Moscow", "London" });
+	p.Check(s);
+	VisitPlaces(s, { "Moscow", "London" });
 	return 0;
 }
